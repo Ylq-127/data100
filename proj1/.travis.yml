@@ -1,0 +1,26 @@
+# Travis CI config file
+language: python
+
+# We don't actually use the Travis Python, but this keeps it organized.
+python:
+  - "3.6"
+
+# We install miniconda and create a custom environment off our yml file
+install:
+  - sudo apt-get update
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  # Useful for debugging any issues with conda
+  - conda info -a
+
+  # Encapsulate the environment info into its own yml file (wich carries
+  # the name `data100` within it)
+  - conda env create -q -f environment.yml
+  - source activate data100
+
+script:
+  - pytest tests.py
